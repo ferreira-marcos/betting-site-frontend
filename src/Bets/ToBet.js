@@ -8,7 +8,6 @@ export default function ToBet() {
     const [clickedNumbers, setClickedNumbers] = useState([]);
 
     let navigate = useNavigate()
-    let edit = false
     const [bet, setBet] = useState({
         name: "",
         cpf: "",
@@ -19,9 +18,6 @@ export default function ToBet() {
     }, [])
 
     const loadClickedButtons = () => {
-        if (edit) {
-            return clickedNumbers = ""
-        }
         return clickedNumbers.join(', ')
     }
 
@@ -33,8 +29,16 @@ export default function ToBet() {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        await axios.post("http://localhost:8080/newBet", bet)
-        navigate("/Allbets")
+        if(bet.name === "" || bet.cpf ==="" ||  !/^[0-9]{11}$/.test(bet.cpf)){
+            alert('É necessário preencer os campos de nome e cpf');
+        }else if(clickedNumbers.length < 5){
+            alert('Quantidade de números mínima para aposta não atingida');
+        }
+        else{
+
+            await axios.post("http://localhost:8080/newBet", bet)
+            navigate("/Allbets")
+        }
     }
 
     const handleClick = (number) => {
@@ -59,11 +63,12 @@ export default function ToBet() {
         setBet({ ...bet, numbers: randomNumbers.join(',') });
     };
 
+
     return (
         <div className='container-fluid'>
             <div className='row'>
                 <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
-                    <h2 className='text-center m-4'>Registrar Aposta</h2>
+                    <h1 className='text-center m-4'>Registrar Aposta</h1>
 
                     <form onSubmit={(e) => onSubmit(e)}>
 
@@ -95,6 +100,7 @@ export default function ToBet() {
                         </div>
                         <div className='container-fluid text-center'>
                             <h2 className='text-center mt-5'>Escolher os Números</h2>
+                            <hr></hr>
 
                             {[...Array(50).keys()].map((i) => (
                                 <button
@@ -107,23 +113,29 @@ export default function ToBet() {
                                 </button>
                             ))}
 
-                            <h1 className='text-center mt-5'>Surpresinha</h1>
-                            <button type='button' className='btn btn-primary mx-2 btn-lg' onClick={handleSurprise}>
+                            <h2 className='text-center mt-5'>Surpresinha</h2>
+                            <hr></hr>
+                            <button type='button' className='btn btn-primary mt-2 btn-lg' onClick={handleSurprise}>
                                 Gerar números
                             </button>
+                            
 
                             <h3 className='text-center mt-5'>Números da Aposta:</h3>
-                            <div className='text-center'>
-                                <p>{loadClickedButtons()}</p>
+                            <hr></hr>
+                            <div className='container d-flex'>
+                                <div className='text-center container d-inline-flex justify-content-center' >
+                                    <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold'>{clickedNumbers[0]}</text>
+                                    <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold'>{clickedNumbers[1]}</text>
+                                    <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold'>{clickedNumbers[2]}</text>
+                                    <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold'>{clickedNumbers[3]}</text>
+                                    <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold'>{clickedNumbers[4]}</text>
+                                </div>
+
                             </div>
                         </div>
 
-
-
-
                         <button type='submit' className='btn btn-outline-primary mx-2'>Submit</button>
-                        <button type='button' className='btn btn-outline-secondary mx-2'
-                            onClick={() => edit = true}  >Editar</button>
+        
                         <Link type='submit' className='btn btn-outline-danger mx-2' to='/'>Cancel</Link>
                     </form>
                 </div>
