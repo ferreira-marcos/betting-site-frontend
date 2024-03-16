@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Switch } from 'react-router-dom
 import MatrixNumbers from './MatrixNumber/matrixNumber';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Navbar from './Layout/Navbar';
-import User from './MatrixNumber/User';
+import ToBet from './MatrixNumber/ToBet';
 
 function App() {
   // const [count, setCount] = useState();
@@ -16,9 +16,9 @@ function App() {
         <Navbar />
         <Routes>
 
-          <Route path="/" element={<User />}/>
+          <Route path="/" element={<ToBet />}/>
           {/* <Route path="/matrixNumber" element={<MatrixNumbers />}/> */}
-          <Route path="/matrixNumber/:username/:cpf" component={MatrixNumbers} />
+          {/* <Route path="/matrixNumber/:username/:cpf" component={MatrixNumbers} /> */}
 
         
         </Routes>
