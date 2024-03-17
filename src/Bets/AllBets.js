@@ -24,16 +24,20 @@ export default function AllBets() {
                             <div className='card-header'>
                                 <ul className='list-group list-group-flush'>
                                     <li className='list-group-item'>
+                                        <b>Id da Aposta: </b>
+                                        {bet.id}
+                                    </li>
+                                    <li className='list-group-item'>
                                         <b>Nome: </b>
-                                        {bet.name}
+                                        {bet.punter.name}
                                     </li>
                                     <li className='list-group-item'>
                                         <b>Cpf: </b>
-                                        {bet.cpf}
+                                        {bet.punter.cpf}
                                     </li>
                                     <li className='list-group-item'>
                                         <b>Números: </b>
-                                        {bet.numbers.split(',').join(', ')}
+                                        {bet.numbers}
 
                                     </li>
                                 </ul>
