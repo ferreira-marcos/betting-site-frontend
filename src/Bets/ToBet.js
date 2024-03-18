@@ -151,7 +151,7 @@ export default function ToBet() {
 
                         <button type='submit' className='btn btn-primary mx-2'>Submit</button>
         
-                        <Link type='submit' className='btn btn-danger mx-2' to='/'>Cancel</Link>
+                        <Link type='submit' className='btn btn-danger mx-2' to='/Draw'>Cancel</Link>
                     </form>
                 </div>
             </div>

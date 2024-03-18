@@ -5,6 +5,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import Navbar from './Layout/Navbar';
 import ToBet from './Bets/ToBet';
 import AllBets from './Bets/AllBets';
+import Draw from './Draw/Draw';
 
 function App() {
   // const [count, setCount] = useState();
@@ -18,6 +19,7 @@ function App() {
 
           <Route path="/" element={<ToBet />}/>
           <Route path="/Allbets" element={<AllBets />}/>
+          <Route path="/Draw" element={<Draw />}/>
           {/* <Route path="/matrixNumber" element={<MatrixNumbers />}/> */}
           {/* <Route path="/matrixNumber/:username/:cpf" component={MatrixNumbers} /> */}
 

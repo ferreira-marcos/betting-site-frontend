@@ -12,6 +12,12 @@
     border-radius: 50%;
 }
 
+.drawnNumbers{
+  width: 10%;
+  height: 6%;
+  position: relative;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
