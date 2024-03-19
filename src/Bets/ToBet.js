@@ -40,15 +40,22 @@ export default function ToBet() {
             }
         });
     }
+    
     const handleClick = (number) => {
         if (clickedNumbers.length < 5) {
+            // isButtonClicked(number)
             const newClickedNumbers = [...clickedNumbers, number];
             setClickedNumbers(newClickedNumbers);
             setBet({ ...bet, numbers: newClickedNumbers.join(',') });
         } else {
             alert('Quantidade de números permitidos por aposta atingida');
         }
+
     };
+
+    // const isButtonClicked = (number) =>{
+    //     button.key(number)
+    // }
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -61,7 +68,7 @@ export default function ToBet() {
         else{
             
             await axios.post("http://localhost:8080/newBet", bet)
-            navigate("/Allbets")
+            navigate("/Draw")
         }
     }
 
@@ -120,8 +127,13 @@ export default function ToBet() {
                             {[...Array(50).keys()].map((i) => (
                                 <button
                                     type="button" // Alterado para type="button"
-                                    className='btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber'
+                                    // className='btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber'
                                     key={i}
+                                    className={
+                                        clickedNumbers.includes(i+1)
+                                          ? 'btn btn-primary mx-2 btn-lg m-2 shadow btnNumber' // Classe quando o número foi clicado
+                                          : 'btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber' // Classe padrão
+                                      }
                                     onClick={() => handleClick(i + 1)}
                                 >
                                     {i + 1}
