@@ -4,15 +4,25 @@ import { Link } from 'react-router-dom'
 
 export default function AllBets() {
     const [bets, setBets] = useState([])
+    const [isDeletedBD, setIsDeletedBD] = useState(false);
+
 
     useEffect(() => {
         loadBets()
+        
     }, [])
 
     const loadBets = async () => {
         const result = await axios.get(`http://localhost:8080/allbets`)
         setBets(result.data)
     }
+
+    const loadNewEdition = async () => {
+        setIsDeletedBD(true); // Atualize o estado usando setIsDeletedBD
+        const result = await axios.delete(`http://localhost:8080/deleteDB`)
+        // setBets(result.data)
+        // Navigate("/")
+      }
 
     return (
         <div className='container'>
@@ -44,7 +54,7 @@ export default function AllBets() {
                             </div>
                         </div>
                     ))}
-                    <Link className='btn btn-primary my-2' to={"/"}>Back to Home</Link>
+                    <Link className='btn btn-primary my-2' onClick={loadNewEdition} to={"/"}>Nova Edição de Sorteio</Link>
                 </div>
             </div>
         </div>

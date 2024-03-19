@@ -41,7 +41,7 @@ export default function Draw() {
   }
 
   const loadNewEdition = async () => {
-    setIsDeletedBD(true); // Atualize o estado usando setIsDeletedBD
+    setIsDeletedBD(true); 
     const result = await axios.delete(`http://localhost:8080/deleteDB`)
     // setBets(result.data)
     // Navigate("/")
@@ -152,12 +152,11 @@ export default function Draw() {
       {  renderingCompleted &&  <table className="table table-striped table-bordered">
             <thead>
               <tr>
-                <th>Número Apostado</th>
-                <th>Quantidade de Apostas</th>
+                <th>Nro Apostado</th>
+                <th>Qtd de Apostas</th>
               </tr>
             </thead>
             <tbody>
-              {/* Mapeando o Map retornado pelo endpoint */}
               {Object.entries(allNumbersBet).map(([key, value]) => (
                 <tr key={key}>
                   <td>{key}</td>
@@ -167,8 +166,8 @@ export default function Draw() {
             </tbody>
           </table>}
         </div>
-        <Link type='submit' className='btn btn-primary mx-2 mt-3' to={'/AllBets'}>{renderingCompleted  && "Visualizar todas as Apostas"}</Link>
-        <Link to="/" className='btn  btn-success mx-2 mt-3' onClick={loadNewEdition}>{renderingCompleted  && "Nova Edição"}</Link>
+      {renderingCompleted  &&  ( <Link type='submit' className='btn btn-primary mx-2 mt-3' to={'/AllBets'}>{renderingCompleted  && "Visualizar todas as Apostas"}</Link>)}
+      {renderingCompleted  &&  ( <Link to="/" className='btn  btn-success mx-2 mt-3 ' onClick={loadNewEdition}>{renderingCompleted  && "Nova Edição de Sorteio"}</Link>)}
       </div>
       </div>
 

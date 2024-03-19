@@ -57,16 +57,24 @@ export default function ToBet() {
 
 
     const handleClick = (number) => {
-        if (clickedNumbers.length < 5) {
-            // isButtonClicked(number)
-            const newClickedNumbers = [...clickedNumbers, number];
+        const index = clickedNumbers.indexOf(number);
+
+        if (index === -1) { // se o número não estiver no array de números clicados
+            if (clickedNumbers.length < 5) {
+                const newClickedNumbers = [...clickedNumbers, number];
+                setClickedNumbers(newClickedNumbers);
+                setBet({ ...bet, numbers: newClickedNumbers.join(',') });
+            } else {
+                alert('Quantidade de números permitidos por aposta atingida');
+            }
+        } else {// caso o número já esteja no array de números clicados
+            const newClickedNumbers = [...clickedNumbers];
+            newClickedNumbers.splice(index, 1);
             setClickedNumbers(newClickedNumbers);
             setBet({ ...bet, numbers: newClickedNumbers.join(',') });
-        } else {
-            alert('Quantidade de números permitidos por aposta atingida');
         }
-
     };
+    
 
     // const isButtonClicked = (number) =>{
     //     button.key(number)
@@ -205,7 +213,7 @@ export default function ToBet() {
 
                         <button type='submit' className='btn btn-primary mx-2'>Fazer Aposta</button>
         
-                        <button type='submit' className='btn btn-danger mx-2' onClick={toDrawPage}>Ir para Sorteio</button>
+                        <button type='submit' className='btn btn-success mx-2' onClick={toDrawPage}>Ir para Sorteio</button>
                     </form>
                 </div>
             </div>
