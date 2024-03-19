@@ -6,6 +6,9 @@ import axios from 'axios';
 export default function ToBet() {
 
     const [clickedNumbers, setClickedNumbers] = useState([]);
+    const [bets, setBets] = useState([])
+    const [toDraw, setToDraw] = useState(false)
+
 
     let navigate = useNavigate()
     
@@ -19,7 +22,16 @@ export default function ToBet() {
 
     useEffect(() => {
         loadClickedButtons()
+        
     }, [])
+
+    useEffect(()=>{
+        loadBets()
+
+    }, [toDraw])
+    
+
+
 
     const loadClickedButtons = () => {
         return clickedNumbers
@@ -41,6 +53,9 @@ export default function ToBet() {
         });
     }
     
+
+
+
     const handleClick = (number) => {
         if (clickedNumbers.length < 5) {
             // isButtonClicked(number)
@@ -57,6 +72,12 @@ export default function ToBet() {
     //     button.key(number)
     // }
 
+    
+    const loadBets = async () => {
+        const result = await axios.get(`http://localhost:8080/allbets`)
+        setBets(result.data)
+    }
+
     const onSubmit = async (e) => {
         e.preventDefault()
         if(bet.punter.name === "" || bet.punter.cpf ==="" ||  !/^[0-9]{11}$/.test(bet.punter.cpf)){
@@ -68,9 +89,30 @@ export default function ToBet() {
         else{
             
             await axios.post("http://localhost:8080/newBet", bet)
-            navigate("/Draw")
+            window.location.reload();
+            // navigate("/Draw")
         }
     }
+
+    const toDrawPage = (event) => {
+
+        event.preventDefault(); // Impede o comportamento padrão do formulário
+        setToDraw(true)
+        
+        console.log(bets)
+        // Exibir o diálogo de confirmação
+        const confirmation = window.confirm("Tem certeza que deseja ir para a próxima página?");
+    
+        // Verificar a resposta do usuário
+        if (confirmation && bets.length !=0 ) {
+          // Recarregar a página
+          navigate("/Draw")
+        } else {
+            alert("Nenhuma aposta foi feita")
+          // Se o usuário cancelar, não fazer nada
+          // Ou você pode adicionar algum outro comportamento aqui, como limpar os campos de texto
+        }
+      };
 
 
     const handleSurprise = () => {
@@ -161,9 +203,9 @@ export default function ToBet() {
                             </div>
                         </div>
 
-                        <button type='submit' className='btn btn-primary mx-2'>Submit</button>
+                        <button type='submit' className='btn btn-primary mx-2'>Fazer Aposta</button>
         
-                        <Link type='submit' className='btn btn-danger mx-2' to='/Draw'>Cancel</Link>
+                        <button type='submit' className='btn btn-danger mx-2' onClick={toDrawPage}>Ir para Sorteio</button>
                     </form>
                 </div>
             </div>

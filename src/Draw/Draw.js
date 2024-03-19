@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 
 export default function Draw() {
 
@@ -11,6 +11,7 @@ export default function Draw() {
   const [roundsOfDrawing, setRoundsOfDrawing] = useState([])
   const [elementIndex, setElementIndex] = useState(0);
   const [renderingCompleted, setRenderingCompleted] = useState();
+  const [isDeletedBD, setIsDeletedBD] = useState(false);
 
   const loadGenerateNumbers = async () => {
     const result = await axios.get(`http://localhost:8080/generateNumbers`)
@@ -36,6 +37,13 @@ export default function Draw() {
   const loadBets = async () => {
     const result = await axios.get(`http://localhost:8080/allbets`)
     setBets(result.data)
+  }
+  
+  const loadNewEdition = async () => {
+    setIsDeletedBD(true); // Atualize o estado usando setIsDeletedBD
+    const result = await axios.delete(`http://localhost:8080/deleteDB`)
+    setBets(result.data)
+    // Navigate("/")
   }
 
   useEffect(() => {
@@ -67,24 +75,10 @@ export default function Draw() {
     loadWinners()
     loadBets()
     loadNumbers()
+    console.log(isDeletedBD)
 
+  }, [generatedNumbers, isDeletedBD])
 
-  }, [generatedNumbers])
-
-  function handlePopState(event) {
-    // Exibir o alerta quando o botão "voltar" do navegador for clicado
-    alert('Botão de voltar do navegador foi clicado');
-  }
-  
-  // Adicionar o ouvinte de evento popstate quando a página for carregada
-  window.addEventListener('load', function() {
-    window.addEventListener('popstate', handlePopState);
-  });
-  
-  // Remover o ouvinte de evento popstate quando a página for descarregada
-  window.addEventListener('unload', function() {
-    window.removeEventListener('popstate', handlePopState);
-  });
 
   return (
     <div className='container-fluid'>
@@ -147,7 +141,7 @@ export default function Draw() {
         </div>
 
         <Link type='submit' className='btn btn-primary mx-2 mt-3' to={'/AllBets'}>Visualizar todas as Apostas</Link>
-        <button type='submit' className='btn btn-primary mx-2 mt-3'>Nova Edição</button>
+        <Link to="/" className='btn btn-primary mx-2 mt-3' onClick={loadNewEdition}>Nova Edição</Link>
       </div>
     </div>
 
