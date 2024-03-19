@@ -115,7 +115,7 @@ export default function ToBet() {
       };
 
 
-    const handleSurprise = () => {
+      const handleSurprise = () => {
         const randomNumbers = [];
         while (randomNumbers.length < 5) {
             const num = Math.floor(Math.random() * 50) + 1;
@@ -124,7 +124,7 @@ export default function ToBet() {
             }
         }
         setClickedNumbers(randomNumbers);
-        // setBet({ ...bet, numbers: randomNumbers.join(',') });
+        setBet({ ...bet, numbers: randomNumbers.join(',') });
     };
 
 
@@ -133,7 +133,7 @@ export default function ToBet() {
             <div className='row'>
                 <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
                     <h1 className='text-center m-4'>Registrar Aposta</h1>
-
+                    <p>{clickedNumbers}</p>
                     <form onSubmit={(e) => onSubmit(e)}>
 
                         <div className='mb-3'>
