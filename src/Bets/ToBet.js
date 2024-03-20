@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../App.css';
 import axios from 'axios';
 
 export default function ToBet() {
 
     const [clickedNumbers, setClickedNumbers] = useState([]);
-    const [bets, setBets] = useState([])
-    const [toDraw, setToDraw] = useState(false)
 
-
-    let navigate = useNavigate()
     
     const [bet, setBet] = useState({
         punter: {
@@ -24,24 +20,13 @@ export default function ToBet() {
         loadClickedButtons()
         
     }, [])
-
-    useEffect(()=>{
-        loadBets()
-
-    }, [toDraw])
     
-
-
-
     const loadClickedButtons = () => {
         return clickedNumbers
     }
 
+
     const { punter} = bet
-    
-    // const onInputChange = (e) => {
-    //     setBet({ ...punter, [e.target.name]: e.target.value })
-    // }
     
     const onInputChange = (e) => {
         setBet({ 
@@ -59,7 +44,7 @@ export default function ToBet() {
     const handleClick = (number) => {
         const index = clickedNumbers.indexOf(number);
 
-        if (index === -1) { // se o número não estiver no array de números clicados
+        if (index === -1) { 
             if (clickedNumbers.length < 5) {
                 const newClickedNumbers = [...clickedNumbers, number];
                 setClickedNumbers(newClickedNumbers);
@@ -75,52 +60,20 @@ export default function ToBet() {
         }
     };
     
-
-    // const isButtonClicked = (number) =>{
-    //     button.key(number)
-    // }
-
-    
-    const loadBets = async () => {
-        const result = await axios.get(`http://localhost:8080/allbets`)
-        setBets(result.data)
-    }
-
     const onSubmit = async (e) => {
         e.preventDefault()
         if(bet.punter.name === "" || bet.punter.cpf ==="" ||  !/^[0-9]{11}$/.test(bet.punter.cpf)){
             
-            alert('É necessário preencer os campos de nome e cpf');
+            alert('É necessário preencer os campos de nome e cpf corretamente');
         }else if(clickedNumbers.length < 5){
             alert('Quantidade de números mínima para aposta não atingida');
         }
         else{
-            
             await axios.post("http://localhost:8080/newBet", bet)
             window.location.reload();
-            // navigate("/Draw")
+            alert("Aposta Registrada com Sucesso")
         }
     }
-
-    const toDrawPage = (event) => {
-
-        event.preventDefault(); // Impede o comportamento padrão do formulário
-        setToDraw(true)
-        
-        console.log(bets)
-        // Exibir o diálogo de confirmação
-        const confirmation = window.confirm("Tem certeza que deseja ir para a próxima página?");
-    
-        // Verificar a resposta do usuário
-        if (confirmation && bets.length !=0 ) {
-          // Recarregar a página
-          navigate("/Draw")
-        } else {
-            alert("Nenhuma aposta foi feita")
-          // Se o usuário cancelar, não fazer nada
-          // Ou você pode adicionar algum outro comportamento aqui, como limpar os campos de texto
-        }
-      };
 
 
       const handleSurprise = () => {
@@ -141,7 +94,7 @@ export default function ToBet() {
             <div className='row'>
                 <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
                     <h1 className='text-center m-4'>Registrar Aposta</h1>
-                    <p>{clickedNumbers}</p>
+                    
                     <form onSubmit={(e) => onSubmit(e)}>
 
                         <div className='mb-3'>
@@ -213,7 +166,7 @@ export default function ToBet() {
 
                         <button type='submit' className='btn btn-primary mx-2'>Fazer Aposta</button>
         
-                        <button type='submit' className='btn btn-success mx-2' onClick={toDrawPage}>Ir para Sorteio</button>
+                        <Link type='submit' className='btn btn-success mx-2' to={"/allbets"} >Todas as Apostas</Link>
                     </form>
                 </div>
             </div>

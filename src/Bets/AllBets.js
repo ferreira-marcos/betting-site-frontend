@@ -1,10 +1,31 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function AllBets() {
     const [bets, setBets] = useState([])
-    const [isDeletedBD, setIsDeletedBD] = useState(false);
+    // const [toDraw, setToDraw] = useState(false)
+
+
+    let navigate = useNavigate()
+
+
+    const toDrawPage = (event) => {
+
+        event.preventDefault();
+        // setToDraw(true)
+        
+        console.log(bets)
+        // Exibir o diálogo de confirmação
+        const confirmation = window.confirm("Tem certeza que deseja iniciar o sorteio? Se Sim, clique em OK. Se não, clique em CANCELAR");
+    
+        // Verificar a resposta do usuário
+        if (confirmation && bets.length !==0 ) {
+          navigate("/Draw")
+        } else if(bets.length === 0) {
+            alert("Nenhuma aposta foi feita")
+        }
+      };
 
 
     useEffect(() => {
@@ -16,13 +37,6 @@ export default function AllBets() {
         const result = await axios.get(`http://localhost:8080/allbets`)
         setBets(result.data)
     }
-
-    const loadNewEdition = async () => {
-        setIsDeletedBD(true); // Atualize o estado usando setIsDeletedBD
-        const result = await axios.delete(`http://localhost:8080/deleteDB`)
-        // setBets(result.data)
-        // Navigate("/")
-      }
 
     return (
         <div className='container'>
@@ -54,7 +68,8 @@ export default function AllBets() {
                             </div>
                         </div>
                     ))}
-                    <Link className='btn btn-primary my-2' onClick={loadNewEdition} to={"/"}>Nova Edição de Sorteio</Link>
+                    <Link className='btn btn-primary m-2' to={"/ToBet"}>Fazer outra aposta</Link>
+                    <Link className='btn btn-success my-2' onClick={toDrawPage} to={"/Draw"}>Iniciar Sorteio</Link>
                 </div>
             </div>
         </div>

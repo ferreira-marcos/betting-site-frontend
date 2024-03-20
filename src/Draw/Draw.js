@@ -1,18 +1,17 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 export default function Draw() {
 
-  const [bets, setBets] = useState([])
   const [generatedNumbers, seteneatedNumbers] = useState([])
   const [numbers, setNumbers] = useState([])
   const [winners, setWinners] = useState([])
   const [roundsOfDrawing, setRoundsOfDrawing] = useState([])
   const [elementIndex, setElementIndex] = useState(0);
   const [renderingCompleted, setRenderingCompleted] = useState();
-  const [isDeletedBD, setIsDeletedBD] = useState(false);
   const [allNumbersBet, setAllNumbersBet] = useState([]);
+
 
   const loadGenerateNumbers = async () => {
     const result = await axios.get(`http://localhost:8080/generateNumbers`)
@@ -35,26 +34,28 @@ export default function Draw() {
 
   }
 
-  const loadBets = async () => {
-    const result = await axios.get(`http://localhost:8080/allbets`)
-    setBets(result.data)
-  }
 
-  const loadNewEdition = async () => {
-    setIsDeletedBD(true); 
-    const result = await axios.delete(`http://localhost:8080/deleteDB`)
-    // setBets(result.data)
-    // Navigate("/")
-  }
   const loadAllNumbersBet = async () => {
     const result = await axios.get(`http://localhost:8080/getBetsNumbers`)
     setAllNumbersBet(result.data)
-    // Navigate("/")
   }
 
   useEffect(() => {
-    loadGenerateNumbers(); // Carrega os números quando o componente é montado
+    loadGenerateNumbers() // Carrega os números quando o componente é montado
     loadAllNumbersBet()
+
+    const blockBackButton = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      alert("Você não pode voltar, pois o sorteio já começou");
+    };
+
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', blockBackButton);
+
+    return () => {
+      window.removeEventListener('popstate', blockBackButton);
+    };
   }, [])
 
   useEffect(() => {
@@ -79,23 +80,20 @@ export default function Draw() {
     loadRoundsOfDrawing()
     console.log("Hello, World!")
     loadWinners()
-    loadBets()
     loadNumbers()
-    console.log(isDeletedBD)
+
 
     console.log(allNumbersBet)
 
-  }, [generatedNumbers, isDeletedBD])
+  }, [generatedNumbers])
 
-  
+  const sortedEntries = Object.entries(allNumbersBet).sort((a, b) => b[1] - a[1] );
 
   return (
     <div className='container-fluid'>
-      <div className='border rounded p-4 mt-2 shadow text-center'>
+      <div className='p-4 mt-2  text-center'>
         <h1 className='text-center m-4'>Sorteio</h1>
         <hr></hr>
-        {/* <p className='text-center m-4'>{numbers.length}</p>
-        <p className='text-center m-4'>{numbers.join(",")}</p> */}
 
         <h2 className='text-center mb-4'>Números Sorteados</h2>
         <div className='text-center container d-inline-flex justify-content-center'>
@@ -112,13 +110,13 @@ export default function Draw() {
 
         </div>
 
-        <h3 className='text-center mb-2 mt-5 text-warning '  >{renderingCompleted  && "Número de Rodadas: " + roundsOfDrawing}</h3>
-        <h3 className='text-center mb-3 mt-5' >{renderingCompleted && winners.length !==0 && "Vencedores"}</h3>
-        <h5 className='text-center mb-3  text-info' >{renderingCompleted && winners.length !==0 && "houveram " + winners.length + " vencedores"}</h5>
+        <h3 className='text-center mb-2 mt-5 text-warning '  >{renderingCompleted && "Número de Rodadas: " + roundsOfDrawing}</h3>
+        <h1 className='text-center mb-3 mt-5' >{renderingCompleted && winners.length !== 0 && "Vencedores"}</h1>
+        <h5 className='text-center mb-3   text-info' >{renderingCompleted && winners.length !== 0 && "número de vencedores: " + winners.length}</h5>
 
         <div className='container'>
           {
-            winners.length === 0 ? renderingCompleted && <h3 className='text-center' >Não houve vencedores</h3>
+            winners.length === 0 ? renderingCompleted && <h3 className='text-center  text-danger' >Não houve vencedores</h3>
               : (winners
                 .sort((bets, bet) => bets.punter.name.localeCompare(bet.punter.name))
                 .map((winner, index) => (
@@ -149,7 +147,7 @@ export default function Draw() {
         </div>
         <div className="container mt-5">
           {renderingCompleted && <h3>Lista de Números Apostados</h3>}
-      {  renderingCompleted &&  <table className="table table-striped table-bordered">
+          {renderingCompleted && <table className="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>Nro Apostado</th>
@@ -157,7 +155,7 @@ export default function Draw() {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(allNumbersBet).map(([key, value]) => (
+              {sortedEntries.map(([key, value]) => (
                 <tr key={key}>
                   <td>{key}</td>
                   <td>{value}</td>
@@ -166,10 +164,10 @@ export default function Draw() {
             </tbody>
           </table>}
         </div>
-      {renderingCompleted  &&  ( <Link type='submit' className='btn btn-primary mx-2 mt-3' to={'/AllBets'}>{renderingCompleted  && "Visualizar todas as Apostas"}</Link>)}
-      {renderingCompleted  &&  ( <Link to="/" className='btn  btn-success mx-2 mt-3 ' onClick={loadNewEdition}>{renderingCompleted  && "Nova Edição de Sorteio"}</Link>)}
+        {winners.length !== 0 && (<Link type='submit' className='btn btn-primary mx-2 mt-3' to={'/AwardPage'}>{renderingCompleted && "Premiação"}</Link>)}
+        {renderingCompleted && (<Link to="/" className='btn  btn-success mx-2 mt-3 ' >{renderingCompleted && "Nova Edição de Apostas"}</Link>)}
       </div>
-      </div>
+    </div>
 
 
   )
