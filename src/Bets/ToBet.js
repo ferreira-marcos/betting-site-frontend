@@ -7,7 +7,7 @@ export default function ToBet() {
 
     const [clickedNumbers, setClickedNumbers] = useState([]);
 
-    
+    // declara a constante bet
     const [bet, setBet] = useState({
         punter: {
             name: "",
@@ -18,33 +18,32 @@ export default function ToBet() {
 
     useEffect(() => {
         loadClickedButtons()
-        
+
     }, [])
-    
+
     const loadClickedButtons = () => {
         return clickedNumbers
     }
 
 
-    const { punter} = bet
-    
+    const { punter } = bet
+
     const onInputChange = (e) => {
-        setBet({ 
-            ...bet, 
+        setBet({
+            ...bet,
             punter: {
                 ...bet.punter,
-                [e.target.name]: e.target.value 
+                [e.target.name]: e.target.value
             }
         });
     }
-    
 
-
-
+    // função a escolha manual dos números 
     const handleClick = (number) => {
         const index = clickedNumbers.indexOf(number);
 
-        if (index === -1) { 
+        // caso seja um número que não foi clicado
+        if (index === -1) {
             if (clickedNumbers.length < 5) {
                 const newClickedNumbers = [...clickedNumbers, number];
                 setClickedNumbers(newClickedNumbers);
@@ -52,31 +51,34 @@ export default function ToBet() {
             } else {
                 alert('Quantidade de números permitidos por aposta atingida');
             }
-        } else {// caso o número já esteja no array de números clicados
+        } else {// se o número já estiver na lista de números clicados, e for clicado novamente ele é retirado da lsita
             const newClickedNumbers = [...clickedNumbers];
             newClickedNumbers.splice(index, 1);
             setClickedNumbers(newClickedNumbers);
             setBet({ ...bet, numbers: newClickedNumbers.join(',') });
         }
     };
-    
+
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(bet.punter.name === "" || bet.punter.cpf ==="" ||  !/^[0-9]{11}$/.test(bet.punter.cpf)){
-            
+
+        // testa se os campos foram corretamente preenchidos
+        if (bet.punter.name === "" || bet.punter.cpf === "" || !/^[0-9]{11}$/.test(bet.punter.cpf)) {
+
             alert('É necessário preencer os campos de nome e cpf corretamente');
-        }else if(clickedNumbers.length < 5){
+        } else if (clickedNumbers.length < 5) {
             alert('Quantidade de números mínima para aposta não atingida');
         }
-        else{
+        else {
+            // se os campos foram preenchidos corretamente, é mandada para o back end a nova aposta
             await axios.post("http://localhost:8080/newBet", bet)
             window.location.reload();
             alert("Aposta Registrada com Sucesso")
         }
     }
 
-
-      const handleSurprise = () => {
+    // gera os números aleatórios, função "surpresinha"
+    const handleSurprise = () => {
         const randomNumbers = [];
         while (randomNumbers.length < 5) {
             const num = Math.floor(Math.random() * 50) + 1;
@@ -94,7 +96,7 @@ export default function ToBet() {
             <div className='row'>
                 <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
                     <h1 className='text-center m-4'>Registrar Aposta</h1>
-                    
+
                     <form onSubmit={(e) => onSubmit(e)}>
 
                         <div className='mb-3'>
@@ -127,17 +129,17 @@ export default function ToBet() {
                             <h2 className='text-center mt-5'>Escolher os Números</h2>
                             <hr></hr>
 
+                            {/* gera os 50 botões na tela */}
                             {[...Array(50).keys()].map((i) => (
                                 <button
-                                    type="button" // Alterado para type="button"
-                                    // className='btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber'
+                                    type="button"
                                     key={i}
                                     className={
-                                        clickedNumbers.includes(i+1)
-                                          ? 'btn btn-primary mx-2 btn-lg m-2 shadow btnNumber' // Classe quando o número foi clicado
-                                          : 'btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber' // Classe padrão
-                                      }
-                                    onClick={() => handleClick(i + 1)}
+                                        clickedNumbers.includes(i + 1)
+                                            ? 'btn btn-primary mx-2 btn-lg m-2 shadow btnNumber' // caso o número tenha sido clicado
+                                            : 'btn btn-outline-primary mx-2 btn-lg m-2 shadow btnNumber' // caso o número não tenha sido clicado
+                                    }
+                                    onClick={() => handleClick(i + 1)} 
                                 >
                                     {i + 1}
                                 </button>
@@ -148,11 +150,13 @@ export default function ToBet() {
                             <button type='button' className='btn btn-primary mt-2 btn-lg' onClick={handleSurprise}>
                                 Gerar números
                             </button>
-                            
+
 
                             <h3 className='text-center mt-5'>Números da Aposta:</h3>
                             <hr></hr>
                             <div className='container d-flex'>
+
+                                {/* mostrar os cinco números escolhidos */}
                                 <div className='text-center container d-inline-flex justify-content-center' >
                                     <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold border border-primary text-primary'>{clickedNumbers[0]}</text>
                                     <text className='choseNumbers d-flex justify-content-center align-items-center shadow fw-bold border border-primary text-primary'>{clickedNumbers[1]}</text>
@@ -165,7 +169,8 @@ export default function ToBet() {
                         </div>
 
                         <button type='submit' className='btn btn-primary mx-2'>Fazer Aposta</button>
-        
+                        
+                        {/* ir para a tela que mostra todas as apostas */}
                         <Link type='submit' className='btn btn-success mx-2' to={"/allbets"} >Todas as Apostas</Link>
                     </form>
                 </div>

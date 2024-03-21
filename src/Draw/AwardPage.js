@@ -32,7 +32,7 @@ export default function AwardPage() {
     <div className='container'>
         <h1>Prêmio</h1>
       {  winners
-                .sort((bets, bet) => bets.punter.name.localeCompare(bet.punter.name))
+                .sort((bets, bet) => bets.punter.name.localeCompare(bet.punter.name)) 
                 .map((winner, index) => (
                   <div className='card' key={index}>
                     <div className=' bg-white card-header'>
